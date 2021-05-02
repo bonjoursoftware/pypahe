@@ -1,7 +1,7 @@
 DOCKER_RUN = docker run  --interactive --rm bonjoursoftware/pypahe:local
 
 .PHONY: all
-all: fmt-check test static-analysis
+all: fmt-check test static-analysis md-check
 
 .PHONY: docker-build
 docker-build:
@@ -35,3 +35,8 @@ mypy: docker-build
 .PHONY: fmt
 fmt:
 	@pipenv run black --line-length 120 .
+
+.PHONY: md-check
+md-check:
+	@docker pull zemanlx/remark-lint:0.2.0 >/dev/null
+	@docker run --rm -i -v $(PWD):/lint/input:ro zemanlx/remark-lint:0.2.0 --frail .
