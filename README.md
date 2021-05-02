@@ -11,7 +11,8 @@ Bonjour Software's pypahe is a **Py**thon **Pa**ckage **He**lper command-line to
 
 #### Setup
 
-Install dependencies and activate a virtual environment with:
+Ensure [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today) is installed first. Then download dependencies
+and activate a virtual environment with:
 
 ```shell
 pipenv sync
