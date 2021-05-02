@@ -11,15 +11,36 @@ Bonjour Software's pypahe is a **Py**thon **Pa**ckage **He**lper command-line to
 
 #### Setup
 
+Install dependencies and activate a virtual environment with:
+
 ```shell
 pipenv sync
+pipenv shell
 ```
 
 #### Commands
 
+The following commands need to be run inside an activated virtual environment:
+
 - find latest package version
 
 ```shell
-./pypahe.sh latest boto3
+python pypahe.py latest boto3
 1.17.62
+```
+
+- show available commands
+
+```shell
+python pypahe.py --help
+```
+
+#### Shell wrapper
+
+A shell script wrapper is available for convenience; it automates the creation and activation of a virtual environment
+then calls `pypahe.py` from inside the virtual environment:
+
+```shell
+./pypahe.sh latest flake8
+3.9.1
 ```
