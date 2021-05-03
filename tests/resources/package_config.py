@@ -37,7 +37,39 @@ pytest = "==6.2.3"
 python_version = "3.9.4"
 """
 
+PIPFILE_UPGRADE = """[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "==2.25.1"
+records = "==0.5.3"
+
+[dev-packages]
+flake8 = "==3.9.1"
+pytest = "==6.2.3"
+
+[requires]
+python_version = "3.9.4"
+"""
+
 POETRY_PYPROJECT = """[tool.poetry]
+name = "sample-package-config"
+version = "0.8.2"
+description = "Some sample package config"
+authors = ["Bonjour Software Limited"]
+
+[tool.poetry.dependencies]
+python = "*"
+pendulum = "^1.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.4"
+mypy = "*"
+"""
+
+POETRY_PYPROJECT_UPGRADE = """[tool.poetry]
 name = "sample-package-config"
 version = "0.8.2"
 description = "Some sample package config"

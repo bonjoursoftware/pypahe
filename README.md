@@ -24,8 +24,8 @@
 ./pypahe.sh  --help
 ```
 
-- upgrade dependencies
+- upgrade packages
 
 ```shell
-./pypahe.sh upgrade "$(cat Pipfile)"
+./pypahe.sh upgrade "$(cat /path/to/Pipfile)" > /path/to/Pipfile
 ```

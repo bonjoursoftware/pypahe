@@ -39,7 +39,7 @@ def parse_args() -> None:
 
     upgrade_desc = "Upgrade package config"
     upgrade_parser = subparsers.add_parser("upgrade", help=upgrade_desc, description=upgrade_desc)
-    upgrade_parser.add_argument(dest="package_config", type=str, help="Pipfile / pyproject.toml config content")
+    upgrade_parser.add_argument(dest="package_config", type=str, help="Pipfile / Poetry pyproject config content")
     upgrade_parser.set_defaults(func=upgrade_package_config)
 
     args = parser.parse_args()
@@ -55,7 +55,7 @@ def find_latest_version(args: Namespace):
 
 def upgrade_package_config(args: Namespace):
     try:
-        print(args.package_config)
+        print(package_helper.upgrade_packages(args.package_config))
     except PypaheException as ex:
         print(ex)
 

@@ -22,6 +22,7 @@
 #
 from configparser import ConfigParser
 from dataclasses import dataclass
+from re import sub
 from requests import Response, get
 from requests.exceptions import RequestException
 from typing import Callable, List
@@ -44,6 +45,16 @@ def list_packages(package_config: str) -> List[Package]:
     sections = [section[1] for section in parsed_config.items() if section[0] in PACKAGE_SECTIONS]
     packages = [Package(name=package[0], version=package[1]) for section in sections for package in section.items()]
     return list(filter(lambda package: package.name not in PACKAGE_EXCLUSIONS, packages))
+
+
+def upgrade_packages(package_config: str) -> str:
+    for package in list_packages(package_config):
+        package_config = sub(
+            f"\\S*{package.name}\\s*=\\s*\\S*",
+            f'{package.name} = "=={find_latest_version(package.name)}"',
+            package_config,
+        )
+    return package_config
 
 
 def find_latest_version(package: str) -> str:

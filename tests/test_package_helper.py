@@ -25,11 +25,10 @@ from json import dumps
 from pytest import raises
 from unittest import TestCase
 
-from pypahe.package_helper import Package, find_latest_version, list_packages
+from pypahe.package_helper import Package, find_latest_version, list_packages, upgrade_packages
 from pypahe.exceptions import PypaheException
 
-from tests.resources.package_config_samples import PIPFILE, POETRY_PYPROJECT
-from tests.resources.pipy_responses import GET_PACKAGE_INFO
+from tests.resources.package_config import PIPFILE, PIPFILE_UPGRADE, POETRY_PYPROJECT
 
 
 class TestListPackages(TestCase):
@@ -40,7 +39,7 @@ class TestListPackages(TestCase):
             Package(name="flake8", version='"==3.8.2"'),
             Package(name="pytest", version='"==6.2.3"'),
         ]
-        self.assertEqual(packages, list_packages(PIPFILE))
+        assert packages == list_packages(PIPFILE)
 
     def test_list_poetry_pyproject_packages(self) -> None:
         packages = [
@@ -48,26 +47,36 @@ class TestListPackages(TestCase):
             Package(name="pytest", version='"^3.4"'),
             Package(name="mypy", version='"*"'),
         ]
-        self.assertEqual(packages, list_packages(POETRY_PYPROJECT))
+        assert packages == list_packages(POETRY_PYPROJECT)
+
+
+class TestUpgradePackages(TestCase):
+    @activate
+    def test_upgrade_pipfile_packages(self) -> None:
+        mock_package_version("requests", "2.25.1")
+        mock_package_version("records", "0.5.3")
+        mock_package_version("flake8", "3.9.1")
+        mock_package_version("pytest", "6.2.3")
+        assert PIPFILE_UPGRADE == upgrade_packages(PIPFILE)
 
 
 class TestFindLatestVersion(TestCase):
     @activate
     def test_package_exists(self) -> None:
-        register_uri(
-            method=GET,
-            uri="https://pypi.org/pypi/some_package/json",
-            body=dumps(GET_PACKAGE_INFO),
-            content_type="text/json",
-        )
+        mock_package_version("some_package", "4.12.3")
         assert "4.12.3" == find_latest_version("some_package")
 
     @activate
     def test_package_does_not_exist(self) -> None:
-        register_uri(
-            method=GET,
-            uri="https://pypi.org/pypi/some_package/json",
-            status=404,
-        )
+        register_uri(method=GET, uri="https://pypi.org/pypi/some_package/json", status=404)
         with raises(PypaheException):
             find_latest_version("some_package")
+
+
+def mock_package_version(package: str, version: str) -> None:
+    register_uri(
+        method=GET,
+        uri=f"https://pypi.org/pypi/{package}/json",
+        body=dumps({"info": {"name": package, "version": version}}),
+        content_type="text/json",
+    )
