@@ -20,3 +20,34 @@
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/pypahe/blob/master/LICENSE
 #
+PIPFILE = """[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+records = '>0.5.0'
+
+[dev-packages]
+flake8 = "==3.8.2"
+pytest = "==6.2.3"
+
+[requires]
+python_version = "3.9.4"
+"""
+
+POETRY_PYPROJECT = """[tool.poetry]
+name = "sample-package-config"
+version = "0.8.2"
+description = "Some sample package config"
+authors = ["Bonjour Software Limited"]
+
+[tool.poetry.dependencies]
+python = "*"
+pendulum = "^1.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.4"
+mypy = "*"
+"""

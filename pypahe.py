@@ -19,9 +19,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/pypahe/blob/master/LICENSE
+#
 from argparse import ArgumentParser, Namespace
 
-from pypahe import package_info
+from pypahe import package_helper
 from pypahe.exceptions import PypaheException
 
 
@@ -36,13 +37,25 @@ def parse_args() -> None:
     latest_parser.add_argument(dest="package", type=str, help="package name")
     latest_parser.set_defaults(func=find_latest_version)
 
+    upgrade_desc = "Upgrade package config"
+    upgrade_parser = subparsers.add_parser("upgrade", help=upgrade_desc, description=upgrade_desc)
+    upgrade_parser.add_argument(dest="package_config", type=str, help="Pipfile / pyproject.toml config content")
+    upgrade_parser.set_defaults(func=upgrade_package_config)
+
     args = parser.parse_args()
     args.func(args)
 
 
 def find_latest_version(args: Namespace):
     try:
-        print(package_info.find_latest_version(args.package))
+        print(package_helper.find_latest_version(args.package))
+    except PypaheException as ex:
+        print(ex)
+
+
+def upgrade_package_config(args: Namespace):
+    try:
+        print(args.package_config)
     except PypaheException as ex:
         print(ex)
 

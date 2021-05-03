@@ -19,11 +19,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/pypahe/blob/master/LICENSE
+#
+from configparser import ConfigParser
+from dataclasses import dataclass
 from requests import Response, get
 from requests.exceptions import RequestException
-from typing import Callable
+from typing import Callable, List
 
 from pypahe.exceptions import PypaheException
+
+PACKAGE_SECTIONS = ["packages", "dev-packages", "tool.poetry.dependencies", "tool.poetry.dev-dependencies"]
+PACKAGE_EXCLUSIONS = ["python"]
+
+
+@dataclass
+class Package:
+    name: str
+    version: str
+
+
+def list_packages(package_config: str) -> List[Package]:
+    parsed_config = ConfigParser()
+    parsed_config.read_string(package_config)
+    sections = [section[1] for section in parsed_config.items() if section[0] in PACKAGE_SECTIONS]
+    packages = [Package(name=package[0], version=package[1]) for section in sections for package in section.items()]
+    return list(filter(lambda package: package.name not in PACKAGE_EXCLUSIONS, packages))
 
 
 def find_latest_version(package: str) -> str:

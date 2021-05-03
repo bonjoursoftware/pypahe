@@ -19,15 +19,36 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/pypahe/blob/master/LICENSE
+#
 from httpretty import GET, activate, register_uri
 from json import dumps
 from pytest import raises
 from unittest import TestCase
 
-from pypahe.package_info import find_latest_version
+from pypahe.package_helper import Package, find_latest_version, list_packages
 from pypahe.exceptions import PypaheException
 
+from tests.resources.package_config_samples import PIPFILE, POETRY_PYPROJECT
 from tests.resources.pipy_responses import GET_PACKAGE_INFO
+
+
+class TestListPackages(TestCase):
+    def test_list_pipfile_packages(self) -> None:
+        packages = [
+            Package(name="requests", version='"*"'),
+            Package(name="records", version="'>0.5.0'"),
+            Package(name="flake8", version='"==3.8.2"'),
+            Package(name="pytest", version='"==6.2.3"'),
+        ]
+        self.assertEqual(packages, list_packages(PIPFILE))
+
+    def test_list_poetry_pyproject_packages(self) -> None:
+        packages = [
+            Package(name="pendulum", version='"^1.4"'),
+            Package(name="pytest", version='"^3.4"'),
+            Package(name="mypy", version='"*"'),
+        ]
+        self.assertEqual(packages, list_packages(POETRY_PYPROJECT))
 
 
 class TestFindLatestVersion(TestCase):

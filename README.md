@@ -23,3 +23,9 @@
 ```shell
 ./pypahe.sh  --help
 ```
+
+- upgrade dependencies
+
+```shell
+./pypahe.sh upgrade "$(cat Pipfile)"
+```
