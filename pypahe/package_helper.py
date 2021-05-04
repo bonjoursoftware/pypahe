@@ -22,6 +22,7 @@
 #
 from configparser import ConfigParser
 from dataclasses import dataclass
+from functools import reduce
 from re import sub
 from requests import Response, get
 from requests.exceptions import RequestException
@@ -48,13 +49,11 @@ def list_packages(package_config: str) -> List[Package]:
 
 
 def upgrade_packages(package_config: str) -> str:
-    for package in list_packages(package_config):
-        package_config = sub(
-            f"\\S*{package.name}\\s*=\\s*\\S*",
-            f'{package.name} = "=={find_latest_version(package.name)}"',
-            package_config,
-        )
-    return package_config
+    return reduce(
+        lambda config, p: sub(f"\\S*{p.name}\\s*=\\s*\\S*", f'{p.name} = "=={find_latest_version(p.name)}"', config),
+        list_packages(package_config),
+        package_config,
+    )
 
 
 def find_latest_version(package: str) -> str:
