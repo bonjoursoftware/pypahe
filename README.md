@@ -11,21 +11,34 @@
 
 ## Usage
 
-- find latest package version
+- print the latest available version of a given package:
 
 ```shell
 ./pypahe.sh latest boto3
 1.17.62
 ```
 
-- show available commands
+- print a given Pipfile or Poetry pyproject where all packages have been upgraded to their latest versions:
+
+```shell
+./pypahe.sh upgrade "$(cat /path/to/package_config)"
+```
+
+Tip: the Pipfile or Poetry pyproject file can be upgraded in place with:
+
+```shell
+./pypahe.sh upgrade "$(cat /path/to/package_config)" > /path/to/package_config
+```
+
+- print manual:
 
 ```shell
 ./pypahe.sh  --help
 ```
 
-- upgrade packages
+Tip: the `--help` argument also works on subcommands:
 
 ```shell
-./pypahe.sh upgrade "$(cat /path/to/Pipfile)" > /path/to/Pipfile
+./pypahe.sh latest --help
+./pypahe.sh upgrade --help
 ```

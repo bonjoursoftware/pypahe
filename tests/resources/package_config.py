@@ -77,9 +77,9 @@ authors = ["Bonjour Software Limited"]
 
 [tool.poetry.dependencies]
 python = "*"
-pendulum = "^1.4"
+pendulum = "2.1.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^3.4"
-mypy = "*"
+pytest = "6.2.3"
+mypy = "0.812"
 """

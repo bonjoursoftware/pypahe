@@ -28,36 +28,43 @@ from unittest import TestCase
 from pypahe.package_helper import Package, find_latest_version, list_packages, upgrade_packages
 from pypahe.exceptions import PypaheException
 
-from tests.resources.package_config import PIPFILE, PIPFILE_UPGRADE, POETRY_PYPROJECT
+from tests.resources.package_config import PIPFILE, PIPFILE_UPGRADE, POETRY_PYPROJECT, POETRY_PYPROJECT_UPGRADE
 
 
 class TestListPackages(TestCase):
     def test_list_pipfile_packages(self) -> None:
         packages = [
-            Package(name="requests", version='"*"'),
-            Package(name="records", version="'>0.5.0'"),
-            Package(name="flake8", version='"==3.8.2"'),
-            Package(name="pytest", version='"==6.2.3"'),
+            Package(name="requests", version='"*"', section="packages"),
+            Package(name="records", version="'>0.5.0'", section="packages"),
+            Package(name="flake8", version='"==3.8.2"', section="dev-packages"),
+            Package(name="pytest", version='"==6.2.3"', section="dev-packages"),
         ]
         assert packages == list_packages(PIPFILE)
 
     def test_list_poetry_pyproject_packages(self) -> None:
         packages = [
-            Package(name="pendulum", version='"^1.4"'),
-            Package(name="pytest", version='"^3.4"'),
-            Package(name="mypy", version='"*"'),
+            Package(name="pendulum", version='"^1.4"', section="tool.poetry.dependencies"),
+            Package(name="pytest", version='"^3.4"', section="tool.poetry.dev-dependencies"),
+            Package(name="mypy", version='"*"', section="tool.poetry.dev-dependencies"),
         ]
         assert packages == list_packages(POETRY_PYPROJECT)
 
 
+@activate
 class TestUpgradePackages(TestCase):
-    @activate
-    def test_upgrade_pipfile_packages(self) -> None:
-        mock_package_version("requests", "2.25.1")
-        mock_package_version("records", "0.5.3")
+    def setUp(self) -> None:
         mock_package_version("flake8", "3.9.1")
+        mock_package_version("mypy", "0.812")
+        mock_package_version("pendulum", "2.1.2")
         mock_package_version("pytest", "6.2.3")
+        mock_package_version("records", "0.5.3")
+        mock_package_version("requests", "2.25.1")
+
+    def test_upgrade_pipfile_packages(self) -> None:
         assert PIPFILE_UPGRADE == upgrade_packages(PIPFILE)
+
+    def test_upgrade_poetry_pyproject_packages(self) -> None:
+        assert POETRY_PYPROJECT_UPGRADE == upgrade_packages(POETRY_PYPROJECT)
 
 
 class TestFindLatestVersion(TestCase):

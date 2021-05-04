@@ -37,23 +37,29 @@ PACKAGE_EXCLUSIONS = ["python"]
 @dataclass
 class Package:
     name: str
+    section: str
     version: str
+
+    def to_declaration_pattern(self) -> str:
+        return f"\\S*{self.name}\\s*=\\s*\\S*"
+
+    def to_latest(self) -> str:
+        return f'{self.name} = "{self._version_constraint()}{find_latest_version(self.name)}"'
+
+    def _version_constraint(self) -> str:
+        return "" if "poetry" in self.section else "=="
 
 
 def list_packages(package_config: str) -> List[Package]:
     parsed_config = ConfigParser()
     parsed_config.read_string(package_config)
     sections = [section[1] for section in parsed_config.items() if section[0] in PACKAGE_SECTIONS]
-    packages = [Package(name=package[0], version=package[1]) for section in sections for package in section.items()]
+    packages = [Package(name=package[0], version=package[1], section=s.name) for s in sections for package in s.items()]
     return list(filter(lambda package: package.name not in PACKAGE_EXCLUSIONS, packages))
 
 
-def upgrade_packages(package_config: str) -> str:
-    return reduce(
-        lambda config, p: sub(f"\\S*{p.name}\\s*=\\s*\\S*", f'{p.name} = "=={find_latest_version(p.name)}"', config),
-        list_packages(package_config),
-        package_config,
-    )
+def upgrade_packages(config: str) -> str:
+    return reduce(lambda c, p: sub(p.to_declaration_pattern(), p.to_latest(), c), list_packages(config), config)
 
 
 def find_latest_version(package: str) -> str:

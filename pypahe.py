@@ -39,7 +39,7 @@ def parse_args() -> None:
 
     upgrade_desc = "Upgrade package config"
     upgrade_parser = subparsers.add_parser("upgrade", help=upgrade_desc, description=upgrade_desc)
-    upgrade_parser.add_argument(dest="package_config", type=str, help="Pipfile / Poetry pyproject config content")
+    upgrade_parser.add_argument(dest="package_config", type=str, help="Content of Pipfile or Poetry pyproject.toml")
     upgrade_parser.set_defaults(func=upgrade_package_config)
 
     args = parser.parse_args()
