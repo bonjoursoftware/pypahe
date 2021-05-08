@@ -1,11 +1,11 @@
-DOCKER_RUN = docker run  --interactive --rm bonjoursoftware/pypahe:local
+DOCKER_RUN = docker run --interactive --rm bonjoursoftware/pypahe:dev
 
 .PHONY: all
 all: fmt-check test static-analysis md-check
 
 .PHONY: docker-build
 docker-build:
-	@docker build -t bonjoursoftware/pypahe:local . > /dev/null
+	@docker build -t bonjoursoftware/pypahe:dev -f dev.Dockerfile . > /dev/null
 
 .PHONY: fmt-check
 fmt-check: docker-build
