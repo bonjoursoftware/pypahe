@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # pypahe - Python Package Helper
 #
 # https://github.com/bonjoursoftware/pypahe

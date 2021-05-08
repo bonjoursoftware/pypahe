@@ -1,7 +1,7 @@
 DOCKER_RUN = docker run --interactive --rm bonjoursoftware/pypahe:dev
 
 .PHONY: all
-all: fmt-check test static-analysis md-check
+all: fmt-check test static-analysis md-check package
 
 .PHONY: docker-build
 docker-build:
@@ -40,3 +40,7 @@ fmt:
 md-check:
 	@docker pull zemanlx/remark-lint:0.2.0 >/dev/null
 	@docker run --rm -i -v $(PWD):/lint/input:ro zemanlx/remark-lint:0.2.0 --frail .
+
+.PHONY: package
+package:
+	@docker build -t bonjoursoftware/pypahe:latest . >/dev/null
