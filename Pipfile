@@ -7,11 +7,11 @@ name = "pypi"
 requests = "==2.25.1"
 
 [dev-packages]
-black = "==21.4b2"
+black = "==21.5b0"
 flake8 = "==3.9.1"
 httpretty = "==1.0.5"
 mypy = "==0.812"
-pytest = "==6.2.3"
+pytest = "==6.2.4"
 pytest-cov = "==2.11.1"
 
 [requires]
