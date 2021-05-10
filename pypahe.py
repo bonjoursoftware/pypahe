@@ -28,7 +28,9 @@ from pypahe.exceptions import PypaheException
 
 
 def parse_args() -> None:
-    parser = ArgumentParser(description="Python Package Helper", epilog="https://github.com/bonjoursoftware/pypahe")
+    parser = ArgumentParser(
+        description="Python Package Helper", epilog="https://github.com/bonjoursoftware/pypahe", prog="pypahe"
+    )
     parser.set_defaults(func=lambda _: print(parser.format_help()))
 
     subparsers = parser.add_subparsers()
