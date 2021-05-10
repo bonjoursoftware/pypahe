@@ -1,23 +1,34 @@
-DOCKER_RUN = docker run --interactive --rm bonjoursoftware/pypahe:dev
+PYTHON_VERSION = $(shell head -1 .python-version)
+
+DEV_TAG = bonjoursoftware/pypahe:dev
+LATEST_TAG = bonjoursoftware/pypahe:latest
+
+SRC_DIR = pypahe
+
+PIPENV_RUN = docker run --interactive --rm $(DEV_TAG)
 
 .PHONY: all
 all: fmt-check test static-analysis md-check package
 
 .PHONY: docker-build
 docker-build:
-	@docker build -t bonjoursoftware/pypahe:dev -f dev.Dockerfile . > /dev/null
+	@docker build \
+		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
+		--tag $(DEV_TAG) \
+		--file dev.Dockerfile \
+		. > /dev/null
 
 .PHONY: fmt-check
 fmt-check: docker-build
-	@$(DOCKER_RUN) black --line-length 120 --check .
+	@$(PIPENV_RUN) black --line-length 120 --check .
 
 .PHONY: test
 test: docker-build
-	@$(DOCKER_RUN) pytest \
+	@$(PIPENV_RUN) pytest \
 		-v \
 		-p no:cacheprovider \
 		--no-header \
-		--cov=pypahe \
+		--cov=$(SRC_DIR) \
 		--cov-fail-under=100 \
 		--no-cov-on-fail
 
@@ -26,11 +37,11 @@ static-analysis: flake8 mypy
 
 .PHONY: flake8
 flake8: docker-build
-	@$(DOCKER_RUN) flake8 --max-line-length 120
+	@$(PIPENV_RUN) flake8 --max-line-length 120
 
 .PHONY: mypy
 mypy: docker-build
-	@$(DOCKER_RUN) mypy --strict ./**/*.py
+	@$(PIPENV_RUN) mypy --strict ./**/*.py
 
 .PHONY: fmt
 fmt:
@@ -42,5 +53,9 @@ md-check:
 	@docker run --rm -i -v $(PWD):/lint/input:ro zemanlx/remark-lint:0.2.0 --frail .
 
 .PHONY: package
-package:
-	@docker build -t bonjoursoftware/pypahe:latest . >/dev/null
+package: docker-build
+	@docker build \
+		--build-arg BUILDER_IMAGE=$(DEV_TAG) \
+		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
+		--tag $(LATEST_TAG) \
+		. > /dev/null
