@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION
+ARG PYTHON_VERSION=3.9.4
 FROM python:${PYTHON_VERSION}-slim-buster as builder
 WORKDIR /pypahe
 RUN pip install pipenv==2020.11.15
