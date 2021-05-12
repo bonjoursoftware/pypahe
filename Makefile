@@ -53,9 +53,8 @@ md-check:
 	@docker run --rm -i -v $(PWD):/lint/input:ro zemanlx/remark-lint:0.2.0 --frail .
 
 .PHONY: package
-package: docker-build
+package:
 	@docker build \
-		--build-arg BUILDER_IMAGE=$(DEV_TAG) \
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 		--tag $(LATEST_TAG) \
 		. > /dev/null
