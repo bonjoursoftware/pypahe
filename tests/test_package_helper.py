@@ -24,30 +24,12 @@ from httpretty import GET, activate, register_uri
 from json import dumps
 from pytest import raises
 from unittest import TestCase
+from unittest.mock import patch
 
-from pypahe.package_helper import Package, find_latest_version, list_packages, upgrade_packages
 from pypahe.exceptions import PypaheException
+from pypahe.package_helper import PypaheArgs, main, parse_args
 
 from tests.resources.package_config import PIPFILE, PIPFILE_UPGRADE, POETRY_PYPROJECT, POETRY_PYPROJECT_UPGRADE
-
-
-class TestListPackages(TestCase):
-    def test_list_pipfile_packages(self) -> None:
-        packages = [
-            Package(name="requests", version='"*"', section="packages"),
-            Package(name="records", version="'>0.5.0'", section="packages"),
-            Package(name="flake8", version='"==3.8.2"', section="dev-packages"),
-            Package(name="pytest", version='"==6.2.3"', section="dev-packages"),
-        ]
-        assert packages == list_packages(PIPFILE)
-
-    def test_list_poetry_pyproject_packages(self) -> None:
-        packages = [
-            Package(name="pendulum", version='"^1.4"', section="tool.poetry.dependencies"),
-            Package(name="pytest", version='"^3.4"', section="tool.poetry.dev-dependencies"),
-            Package(name="mypy", version='"*"', section="tool.poetry.dev-dependencies"),
-        ]
-        assert packages == list_packages(POETRY_PYPROJECT)
 
 
 @activate
@@ -87,3 +69,21 @@ def mock_package_version(package: str, version: str) -> None:
         body=dumps({"info": {"name": package, "version": version}}),
         content_type="text/json",
     )
+
+
+def find_latest_version(package: str) -> str:
+    return main(PypaheArgs(command="latest", package=package))
+
+
+def upgrade_packages(config: str) -> str:
+    return main(PypaheArgs(command="upgrade", package_config=config))
+
+
+class TestParseArgs(TestCase):
+    def test_parse_command_latest(self) -> None:
+        with patch("sys.argv", "pypahe latest some_package".split()):
+            assert PypaheArgs(command="latest", package="some_package", package_config="") == parse_args()
+
+    def test_parse_command_upgrade(self) -> None:
+        with patch("sys.argv", "pypahe upgrade some_config".split()):
+            assert PypaheArgs(command="upgrade", package="", package_config="some_config") == parse_args()

@@ -20,13 +20,15 @@
 # along with this program. If not, see
 # https://github.com/bonjoursoftware/pypahe/blob/master/LICENSE
 #
+from argparse import ArgumentParser
 from configparser import ConfigParser
 from dataclasses import dataclass
 from functools import reduce
 from re import sub
 from requests import Response, get
 from requests.exceptions import RequestException
-from typing import Callable, List
+from typing import Callable, Dict, List
+
 
 from pypahe.exceptions import PypaheException
 
@@ -81,3 +83,41 @@ def _get(url: str, read_response: Callable[[Response], str], error_msg: str) -> 
 
 def _read_version(response: Response) -> str:
     return str(response.json()["info"]["version"])
+
+
+@dataclass
+class PypaheArgs:
+    command: str
+    package: str = ""
+    package_config: str = ""
+
+
+def parse_args() -> PypaheArgs:
+    parser = ArgumentParser(
+        description="PYthon PAckage HElper (aka pypahe)",
+        epilog="https://github.com/bonjoursoftware/pypahe",
+        prog="docker run bonjoursoftware/pypahe",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    latest_desc = "Find latest package version"
+    latest_parser = subparsers.add_parser("latest", help=latest_desc, description=latest_desc)
+    latest_parser.add_argument(dest="package", type=str, help="package name")
+
+    upgrade_desc = "Upgrade package config"
+    upgrade_parser = subparsers.add_parser("upgrade", help=upgrade_desc, description=upgrade_desc)
+    upgrade_parser.add_argument(dest="package_config", type=str, help="Content of Pipfile or Poetry pyproject.toml")
+
+    args = vars(parser.parse_args())
+
+    return PypaheArgs(
+        command=args["command"], package=args.get("package", ""), package_config=args.get("package_config", "")
+    )
+
+
+def main(args: PypaheArgs) -> str:
+    command_mappings: Dict[str, Callable[[], str]] = {
+        "latest": lambda: find_latest_version(args.package),
+        "upgrade": lambda: upgrade_packages(args.package_config),
+    }
+    return command_mappings[args.command]()
