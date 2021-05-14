@@ -12,11 +12,10 @@ all: fmt-check test static-analysis md-check package
 
 .PHONY: docker-build
 docker-build:
-	@docker build \
+	@curl -sL https://github.com/bonjoursoftware/python-dockerfiles/raw/main/pipenv.Dockerfile | docker build \
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 		--tag $(DEV_TAG) \
-		--file dev.Dockerfile \
-		. > /dev/null
+		-f- . > /dev/null
 
 .PHONY: fmt-check
 fmt-check: docker-build
