@@ -10,5 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: make
-        run: make
+      - name: init
+        run: make init
+      - name: check formatting
+        run: make fmt-check
+      - name: test and check coverage
+        run: make test
+      - name: lint
+        run: make static-analysis
+      - name: check markdown formatting
+        run: make md-check
