@@ -5,25 +5,25 @@ LATEST_TAG = bonjoursoftware/pypahe:latest
 
 SRC_DIR = pypahe
 
-PIPENV_RUN = docker run --interactive --rm $(DEV_TAG)
+POETRY_RUN = docker run --interactive --rm $(DEV_TAG)
 
 .PHONY: all
 all: fmt-check test static-analysis md-check package
 
 .PHONY: docker-build
 docker-build:
-	@curl -sL https://github.com/bonjoursoftware/python-dockerfiles/raw/main/pipenv.Dockerfile | docker build \
+	@curl -sL https://github.com/bonjoursoftware/python-dockerfiles/raw/main/poetry.Dockerfile | docker build \
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 		--tag $(DEV_TAG) \
 		-f- . > /dev/null
 
 .PHONY: fmt-check
 fmt-check: docker-build
-	@$(PIPENV_RUN) black --line-length 120 --check .
+	@$(POETRY_RUN) black --line-length 120 --check .
 
 .PHONY: test
 test: docker-build
-	@$(PIPENV_RUN) pytest \
+	@$(POETRY_RUN) pytest \
 		-v \
 		-p no:cacheprovider \
 		--no-header \
@@ -36,11 +36,11 @@ static-analysis: flake8 mypy
 
 .PHONY: flake8
 flake8: docker-build
-	@$(PIPENV_RUN) flake8 --max-line-length 120
+	@$(POETRY_RUN) flake8 --max-line-length 120
 
 .PHONY: mypy
 mypy: docker-build
-	@$(PIPENV_RUN) mypy --strict ./**/*.py
+	@$(POETRY_RUN) mypy --strict ./**/*.py
 
 .PHONY: fmt
 fmt:

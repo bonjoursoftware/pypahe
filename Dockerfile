@@ -1,9 +1,11 @@
 ARG PYTHON_VERSION=3.9.4
 FROM python:${PYTHON_VERSION}-slim-buster as builder
 WORKDIR /pypahe
-RUN pip install --no-cache-dir pipenv==2020.11.15
-COPY ./Pipfile.lock ./
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv sync
+RUN pip install --no-cache-dir poetry==1.1.6
+COPY ./pyproject.toml ./poetry.lock ./
+RUN poetry config virtualenvs.in-project true --local \
+    && poetry install --no-dev \
+    && poetry cache clear pypi --all --no-interaction
 
 FROM python:${PYTHON_VERSION}-slim-buster
 RUN useradd --create-home pypahe
