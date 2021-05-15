@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "pypahe"
-version = "0.1.0"
+version = "1.0.0"
 description = "pypahe is a PYthon PAckage HElper command-line tool"
-authors = ["https://bonjour.software"]
+license = "GPL-3.0-only"
+authors = ["Antoine <achatain@users.noreply.github.com>"]
+homepage = "https://bonjour.software"
+repository = "https://github.com/bonjoursoftware/pypahe"
 
 [tool.poetry.dependencies]
 python = "^3.9"
