@@ -130,3 +130,6 @@ dmypy.json
 
 # JetBrains
 .idea/
+
+# Bonjour Software Limited build-tools
+.python-Makefile
