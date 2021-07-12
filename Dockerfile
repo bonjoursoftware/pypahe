@@ -1,7 +1,7 @@
-ARG PYTHON_VERSION=3.9.4
+ARG PYTHON_VERSION=3.9.6
 FROM python:${PYTHON_VERSION}-slim-buster as builder
 WORKDIR /pypahe
-RUN pip install --no-cache-dir poetry==1.1.6
+RUN pip install --no-cache-dir poetry==1.1.7
 COPY ./pyproject.toml ./poetry.lock ./
 RUN poetry config virtualenvs.in-project true --local \
     && poetry install --no-dev \
