@@ -2,7 +2,7 @@
 #
 # https://github.com/bonjoursoftware/pypahe
 #
-# Copyright (C) 2021 Bonjour Software Limited
+# Copyright (C) 2021 - 2023 Bonjour Software Limited
 #
 # https://bonjoursoftware.com/
 #
