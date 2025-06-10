@@ -110,9 +110,7 @@ def parse_args() -> PypaheArgs:
 
     args = vars(parser.parse_args())
 
-    return PypaheArgs(
-        command=args["command"], package=args.get("package", ""), package_config=args.get("package_config", "")
-    )
+    return PypaheArgs(command=args["command"], package=args.get("package", ""), package_config=args.get("package_config", ""))
 
 
 def main(args: PypaheArgs) -> str:

@@ -134,3 +134,4 @@ dmypy.json
 # Bonjour Software Limited build-tools
 .python-Makefile
 .remarkrc.yaml
+.remarkignore
