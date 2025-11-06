@@ -64,7 +64,7 @@ authors = ["Bonjour Software Limited"]
 python = "*"
 pendulum = "^1.4"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^3.4"
 mypy = "*"
 """
@@ -79,7 +79,7 @@ authors = ["Bonjour Software Limited"]
 python = "*"
 pendulum = "2.1.2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "6.2.3"
 mypy = "0.812"
 """

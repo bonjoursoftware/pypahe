@@ -32,7 +32,7 @@ from typing import Callable, Dict, List
 
 from pypahe.exceptions import PypaheException
 
-PACKAGE_SECTIONS = ["packages", "dev-packages", "tool.poetry.dependencies", "tool.poetry.dev-dependencies"]
+PACKAGE_SECTIONS = ["packages", "dev-packages", "tool.poetry.dependencies", "tool.poetry.dev-dependencies", "tool.poetry.group.dev.dependencies"]
 PACKAGE_EXCLUSIONS = ["python"]
 
 
