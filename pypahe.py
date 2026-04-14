@@ -24,7 +24,6 @@
 from pypahe.exceptions import PypaheException
 from pypahe.package_helper import main, parse_args
 
-
 if __name__ == "__main__":
     try:
         print(main(parse_args()))
